@@ -13,19 +13,25 @@ use realize\abstracts\AbstractController;
 
 class BaseController extends AbstractController
 {
-
     protected function findViewFile(string $view, string $callerClass): string
     {
-        $page = lcfirst(substr($callerClass, 0, -10));
-        $path = $_SERVER["DOCUMENT_ROOT"] . "/views/$page/$view.php";
+        $search  = ['controller'];
+        $replace = '';
+
+        $callerClass = str_replace($search, $replace, $callerClass);
+        $callerClass = lcfirst($callerClass);
+
+        $serverRoot = $_SERVER['DOCUMENT_ROOT'];
+
+        $path = $serverRoot . '/views/' . $callerClass . '/' . $view . '.php';
+
         try {
             if (!file_exists($path)) {
-                throw new \Exception("Указанный адрес не существует.");
+                throw new \Exception('Файл ' .$path .  ' не найден.');
             }
+            return $path;
+        } catch (\Exception $error) {
+            echo  'Ошибка: ' . $error->getMessage();
         }
-        catch (\Exception $e) {
-            echo $e->getMessage();
-        }
-        return $path;
     }
 }
