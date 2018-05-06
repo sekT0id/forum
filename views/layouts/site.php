@@ -22,18 +22,9 @@
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">php</nav>
 
-<main role="main" class="container">
 
-    <div class="starter-template">
-        <h1>php</h1>
-    </div>
+<?php echo $content;?>
 
-    <?php
-
-        echo $content;
-    ?>
-
-</main>
 
 <?php $this->registerJs();?>
 
