@@ -8,8 +8,9 @@
 
 namespace app\assets;
 
+use realize\base\BaseAssetManager;
 
-class AppAsset
+class AppAsset extends BaseAssetManager
 {
     public $css = [
         '/web/css/bootstrap.min.css',
@@ -17,9 +18,12 @@ class AppAsset
     ] ;
 
     public $js = [
-        '/web/js/jquery.min.js',
         '/web/js/jquery.coockie.js',
         '/web/js/popper.min.js',
         '/web/js/bootstrap.min.js',
+    ];
+
+    public $depends = [
+        '/web/js/jquery.min.js',
     ];
 }

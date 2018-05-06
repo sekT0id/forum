@@ -8,30 +8,72 @@
 
 namespace realize\abstracts;
 
+use app\assets\AppAsset;
 use realize\base\BaseView;
 
 abstract class AbstractController
 {
+    public $layout = null;
+
     /**
-     * Найти view файл по переданому имени.
-     * 1. Сформировать путь к view по правилу
-     *     /<путь до каталога проекта>/views/<callerClass>/<view>.php
-     *     где:
-     *         callerClass - имя контроллера, без слова controller
-     *             SiteController  = site
-     *             ForumController = forum
-     *
-     *         view - Имя view файла.
-     *
-     *
-     * 2. Проверить наличие файла по указанному пути.
-     * 3. Вернуть полное имя файла в случае нахождения, либо выбросить исключение об отсутствии файла.
-     *
      * @param string $view Имя файла.
+     * @param string $callerClass Имя вызвавшего класса.
      * @return string Путь к файлу.
      * @throws \Exception В случае отсутствия файла
      */
-    abstract protected function findViewFile(string $view, string $callerClass) : string;
+    protected function findViewFile(string $view, string $callerClass): string
+    {
+        $search  = ['Controller'];
+        $replace = '';
+
+        $callerClass = str_replace($search, $replace, $callerClass);
+        $callerClass = lcfirst($callerClass);
+
+        $serverRoot = $_SERVER['DOCUMENT_ROOT'];
+
+        $path = $serverRoot . '/views/' . $callerClass . '/' . $view . '.php';
+
+        try {
+            if (!file_exists($path)) {
+                throw new \Exception('Файл ' . $path . ' не найден.');
+            }
+        } catch (\Exception $error) {
+            echo  'Ошибка: ' . $error->getMessage();
+        }
+
+        return $path;
+    }
+
+    /**
+     * @param string $callerClass
+     * @return string
+     */
+    protected  function findLayoutFile(string $callerClass)
+    {
+        $search  = ['Controller'];
+        $replace = '';
+
+        $layoutName = str_replace($search, $replace, $callerClass);
+        $layoutName = lcfirst($layoutName);
+
+        $serverRoot = $_SERVER['DOCUMENT_ROOT'];
+
+        if ($this->layout) {
+            $layoutName = $this->layout;
+        }
+
+        $path = $serverRoot . '/views/layouts/' . $layoutName . '.php';
+
+        try {
+            if (!file_exists($path)) {
+                throw new \Exception('Файл ' .$path .  ' не найден.');
+            }
+        } catch (\Exception $error) {
+            echo  'Ошибка: ' . $error->getMessage();
+        }
+
+        return $path;
+    }
 
     /**
      * @param $view
@@ -45,10 +87,15 @@ abstract class AbstractController
 
         // Формирую путь к view файлу.
         $viewPath = $this->findViewFile($view, $callerClass);
+        $layoutPath = $this->findLayoutFile($callerClass);
 
         $view = new BaseView();
 
-        return $view->render($viewPath, $params);
+        // Регистрирую css и js
+        $assets = new AppAsset();
+        $assets->registerAssets($view);
+
+        return $view->render($layoutPath, $viewPath, $params);
     }
 
     /**
@@ -58,8 +105,15 @@ abstract class AbstractController
     public function run(string $action)
     {
         $actionName = 'action' . ucfirst($action);
-        if (method_exists($this, $actionName)) {
-            return $this->$actionName();
+
+        try {
+            if (!method_exists($this, $actionName)) {
+                throw new \Exception('Метод ' . $actionName .  ' не найден.');
+            }
+        } catch (\Exception $error) {
+            echo  'Ошибка: ' . $error->getMessage();
         }
+
+        return $this->$actionName();
     }
 }

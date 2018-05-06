@@ -10,29 +10,55 @@ namespace realize\abstracts;
 
 abstract class AbstractView
 {
-    /**
-     * @param array $css
-     * @return string
-     */
-//    abstract public function renderCss(array $css) : string ;
+    public $css = '';
+    public $js = '';
 
     /**
-     * @param array $js
      * @return string
      */
-//    abstract public function renderJs(array $js) : string ;
+    public function registerCss()
+    {
+        ob_start();
+        echo $this->css;
+        return ob_end_flush();
+    }
+
+    /**
+     * @return string
+     */
+    public function registerJs()
+    {
+        ob_start();
+        echo $this->js;
+        return ob_end_flush();
+    }
+
+    /**
+     * @param string $view
+     * @param array $params
+     * @return string
+     */
+    public function renderContent(string $view, array $params = [])
+    {
+        ob_start();
+        ob_implicit_flush(false);
+        extract($params);
+        require $view;
+        return ob_get_clean();
+    }
 
     /**
      * @param string $view Путь к view файлу
      * @param array $params Параметры для использования во view
      * @return string
      */
-    public function render(string $view, array $params = [])
+    public function render(string $layout, string $view, array $params = [])
     {
         ob_start();
         ob_implicit_flush(false);
         extract($params);
-        require $view;
+        $content = $this->renderContent($view, $params);
+        require $layout;
         return ob_get_clean();
     }
 }

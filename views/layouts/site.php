@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var string $content
+ * @var \realize\base\BaseView $this
+ */
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +15,7 @@
 
     <title>php</title>
 
-<!--    --><?php //$view->renderCss();?>
+    <?php $this->registerCss();?>
 </head>
 
 <body>
@@ -23,14 +29,12 @@
     </div>
 
     <?php
-    /** @var $id */
-    /** @var $text */
 
-    echo $content;
+        echo $content;
     ?>
 
 </main>
 
-<?php //$view->renderJs();?>
+<?php $this->registerJs();?>
 
 </body></html>
