@@ -28,28 +28,48 @@ abstract class AbstractAssetsManager
     }
 
     /**
-     * Вхождение:
-     *     $css - массив с полными путями к цсс файлам
-     * Задача:
-     *     Сформировать из массива $css строки вида
-     *     <link href="<file>" type="text/css" rel="stylesheet">
-     *     Для обхода массива использовать for
-     *
      * @return string
      */
-    abstract function renderCss() : string;
+    public function renderCss() : string
+    {
+        $result = '';
+        if (is_array($this->css)) {
+            foreach ($this->css as $css) {
+                $result = $result
+                    . '<link href="'
+                    . $css
+                    . '" type="text/css" rel="stylesheet">';
+            }
+        }
+
+        return $result;
+    }
 
     /**
-     * Вхождение:
-     *     $js - массив с полными путями к js файлам
-     *     $depends - массив зависимостей (например jquery)
-     * Задача:
-     *     Сформировать из массива $js и $depends строки вида
-     *     <script type="text/javascript" src="<file>"></script>
-     *     Данные $depends должны обрабатываться в первую очередь.
-     *     Для обхода массива использовать foreach
-     *
      * @return string
      */
-    abstract function renderJs() : string;
+    public function renderJs() : string
+    {
+        $result = '';
+
+        if (is_array($this->depends)) {
+            foreach ($this->depends as $depend) {
+                $result = $result
+                    . '<script src="'
+                    . $depend
+                    . '" type="text/javascript"></script>';
+            }
+        }
+
+        if (is_array($this->js)) {
+            foreach ($this->js as $js) {
+                $result = $result
+                    . '<script src="'
+                    . $js
+                    . '" type="text/javascript"></script>';
+            }
+        }
+
+        return $result;
+    }
 }

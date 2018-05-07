@@ -9,14 +9,17 @@
 namespace app\controllers;
 
 use realize\base\BaseController;
+use realize\base\BaseModel;
 
 class SiteController extends BaseController
 {
     public function actionIndex()
     {
+        $model = new BaseModel();
+        $model->load($_POST);
+
         return $this->render('index', [
-            'id'   => 10,
-            'text' => 'hello',
+            'model' => $model,
         ]);
     }
 }
