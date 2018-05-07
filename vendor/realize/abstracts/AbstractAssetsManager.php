@@ -33,6 +33,7 @@ abstract class AbstractAssetsManager
      * Задача:
      *     Сформировать из массива $css строки вида
      *     <link href="<file>" type="text/css" rel="stylesheet">
+     *     Для обхода массива использовать for
      *
      * @return string
      */
@@ -46,6 +47,7 @@ abstract class AbstractAssetsManager
      *     Сформировать из массива $js и $depends строки вида
      *     <script type="text/javascript" src="<file>"></script>
      *     Данные $depends должны обрабатываться в первую очередь.
+     *     Для обхода массива использовать foreach
      *
      * @return string
      */
