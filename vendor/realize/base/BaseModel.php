@@ -22,8 +22,8 @@ class BaseModel extends AbstractModel
     public function load(array $data): bool
     {
         $notEmpty = 0;
-        foreach ($data as $field=>$value) {
-            if (property_exists(self::class,$field)) {
+        foreach ($data as $field => $value) {
+            if (property_exists(self::class, $field)) {
                 $this->$field = $value;
                 $notEmpty = 1;
             }
